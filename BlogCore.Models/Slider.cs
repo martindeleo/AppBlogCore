@@ -24,7 +24,6 @@ namespace BlogCore.Models
         public string UrlImagen { get; set; }
 
     
-        public bool prueba { get; set; }
 
     }
 }
