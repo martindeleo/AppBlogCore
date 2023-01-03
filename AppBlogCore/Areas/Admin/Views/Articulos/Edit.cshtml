@@ -1,0 +1,90 @@
+﻿@model BlogCore.Models.ViewModels.ArticuloVM
+
+@{
+    ViewData["Title"] = "Editar Articulo";
+}
+
+<br />
+<br />
+
+<h3 class="text-center  >">Editar un articulo</h3>
+
+<form method="post" asp-action="Edit" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Articulo.Id" />   <!--Nota: asi sabe de quien hablamos-->
+    <!--Nota : Para subir archivos...sieeeepre si o si desde el formulario meter un enctype-->
+    <div class="row px-2 offset-1 border">
+        <div asp-validation-summary="ModelOnly" class="text-bg-danger"></div>
+        <div class="col-8  mt-4">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label class="col-4">
+                        <label asp-for="Articulo.Nombre"></label>        <!--Nota: va a mostrar el data anotation-->
+                    </label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Articulo.Nombre" class="form-control" placeholder="Ingrese el nombre de articulo" />
+                    <span asp-validation-for="Articulo.Nombre" class="text-bg-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label class="col-4">
+                        <label asp-for="Articulo.Descripcion"></label>        <!--Nota: va a mostrar el data anotation-->
+                    </label>
+                </div>
+                <div class="col-8">
+                    <textarea asp-for="Articulo.Descripcion" class="form-control" style="height:300px;"></textarea>
+                    <span asp-validation-for="Articulo.Descripcion" class="text-bg-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row mt-2">
+                <div class="col-4">
+                    <label class="col-4">
+                        <label for="Categoria">Categoria</label>        <!--Nota: En la etiqueta mando el ID-->
+                    </label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Articulo.CategoriaId,Model.ListaCategorias,
+                    "-por favor seleccione una categoria-",new {@class = "form-control"})
+                    <span asp-validation-for="Articulo.CategoriaId" class="text-bg-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label class="col-4">
+                        <label asp-for="Articulo.UrlImagen"></label>        <!--Nota: va a mostrar el data anotation-->
+                    </label>
+                </div>
+                <div class="col-8">
+                    <input type="file" name="archivos" id="subidaArchivo" class="form-control" />
+                    <span asp-validation-for="Articulo.UrlImagen" class="text-bg-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row mt-2">
+                <!--Nota le meto un mt-2 para darle un margen->
+                <div class="col-8">
+                    <partial name="_VistaEditarVolver" />        <!--nota: uso la vista parcial-->
+            </div>
+        </div>
+        <div class="col-4 pt-3">
+            <img src="@Model.Articulo.UrlImagen" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+        </div>
+    </div>
+</form>
+
+
+@section Scripts{
+           <!--Nota: Esto es para tener un text AREA con formatos-->
+    <script src="https://cdn.tiny.cloud/1/qukxrn62f4bz0iv6z7enaelkkzuzugir28y709xit9xm659s/tinymce/5/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'lists',
+            menubar: 'file edit format'
+        });
+    </script>
+}
