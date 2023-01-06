@@ -124,6 +124,7 @@ namespace AppBlogCore.Areas.Identity.Pages.Account
                 user.Direccion = Input.Direccion;
                 user.Ciudad = Input.Ciudad;
                 user.Pais = Input.Pais;
+                user.PhoneNumber = Input.PhoneNumber;
 
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);

@@ -21,5 +21,9 @@ namespace BlogCore.Models
 
         [Required(ErrorMessage = "El Pais es obligatorio")]
         public string Pais { get; set; }
+
+        //[Required(ErrorMessage = "El telefono es obligatorio")]
+        //public string PhoneNumber { get; set; }
     }
+
 }
