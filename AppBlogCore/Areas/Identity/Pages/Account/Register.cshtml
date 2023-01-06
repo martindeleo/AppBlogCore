@@ -1,4 +1,6 @@
 ﻿@page
+@using BlogCore.Utilidades
+
 @model RegisterModel
 @{
     ViewData["Title"] = "Registro";
@@ -52,6 +54,21 @@
                 <label asp-for="Input.ConfirmPassword">Confirm Password</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
+
+            <!--Selecttor de roles-->
+            <div class="form-group row">
+                <div class="col-6">
+                    <h4>Seleccionar rol de usuario</h4>
+                </div>
+                <div class="col-5">
+                    <input type="radio" name="radUsuarioRole" value="@CNT.Admin"/>@CNT.Admin
+                    <input type="radio" name="radUsuarioRole" value="@CNT.Usuario"/>@CNT.Usuario
+                </div>
+            </div>
+
+
+
+
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Registro</button>
         </form>
     </div>

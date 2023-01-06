@@ -13,8 +13,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)    //Nota: Lo pase a false
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+//Nota: lo que sigue lo cambio y esto es cuando empece a usar Identity, usuarios y roles: (saco el DEfault  y afrego el IdentityRole
+//builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)    //Nota: Lo pase a false
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)    //Nota: Lo pase a false
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultUI();
+    
 builder.Services.AddControllersWithViews();
 
 //agregar contenerdor de trabajo        //Nota: Bien no se para q pero sino no funca

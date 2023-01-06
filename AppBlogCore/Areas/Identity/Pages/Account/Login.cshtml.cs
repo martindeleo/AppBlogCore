@@ -129,7 +129,7 @@ namespace AppBlogCore.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Login no valido.");
                     return Page();
                 }
             }

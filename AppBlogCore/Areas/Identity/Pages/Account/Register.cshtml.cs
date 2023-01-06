@@ -11,6 +11,7 @@ using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using BlogCore.Models;
+using BlogCore.Utilidades;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -28,6 +29,7 @@ namespace AppBlogCore.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
+        private readonly RoleManager<IdentityRole> _roleManager;        //Nota: Agrego esto para usar roles de Identity
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
@@ -36,6 +38,7 @@ namespace AppBlogCore.Areas.Identity.Pages.Account
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
+            RoleManager<IdentityRole> roleManager,      //Nota: Meto este parametro
             IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -44,6 +47,7 @@ namespace AppBlogCore.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager= roleManager;  //Nota: Sete esto
         }
 
         /// <summary>
@@ -128,19 +132,48 @@ namespace AppBlogCore.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+
+                    //nota: Aqui validamos si los roles existen (en la base) sino se crean :
+                    if(!await _roleManager.RoleExistsAsync(CNT.Admin))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(CNT.Admin)  );
+                        await _roleManager.CreateAsync(new IdentityRole(CNT.Usuario));
+
+                    }
+
+                    //Nota: Ahora obtyengo el rol seleccionado de la interfaz 
+                    string rol = Request.Form["radUsuarioRole"].ToString(); //Nota: radUsuarioRole es el type Radio de la interfaz
+                    if(rol == CNT.Admin)
+                    {
+                        await _userManager.AddToRoleAsync(user, CNT.Admin); //Nota: por aqui cuando fue por un administrador
+                    }
+                    else
+                    {
+                        if (rol == CNT.Usuario)
+                        {
+                            await _userManager.AddToRoleAsync(user, CNT.Usuario); //nota: cuandoes por un usuario
+                        }
+                        else
+                        {
+                            await _userManager.AddToRoleAsync(user, CNT.Usuario);   //nota: entro por aca cuando es crado por alguien de la parte PUBLICA
+                        }
+                    }
+
+
                     _logger.LogInformation("User created a new account with password.");
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                    //Nota: Lo que sigue lo comento...no trabajamos con esto ahora:
+                    //var userId = await _userManager.GetUserIdAsync(user);
+                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    //var callbackUrl = Url.Page(
+                    //    "/Account/ConfirmEmail",
+                    //    pageHandler: null,
+                    //    values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                    //    protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
