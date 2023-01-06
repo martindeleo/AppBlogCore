@@ -4,9 +4,12 @@ using BlogCore.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;   //Nota: para usar el SelectListItem necesito esta lib. Para versiones
 using Microsoft.AspNetCore.Mvc;
 using BlogCore.Models;
+using System.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppBlogCore.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Area("Admin")]   //Nota: ponemos esto
     public class ArticulosController : Controller
     {

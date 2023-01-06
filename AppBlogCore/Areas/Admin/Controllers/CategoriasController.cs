@@ -1,11 +1,16 @@
 ﻿using AppBlogCore.Data;
 using BlogCore.AccesoDatos.Data.Repository.IRepository;
 using BlogCore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace AppBlogCore.Areas.Admin.Controllers
 {
+    [Authorize (Roles ="Admin")]    //Nota: Asi digo q todos los metodos estan protegidos y solo puede entrar los logeados como Admin
+  //  [Authorize]    //Nota: Asi digo q todos los metodos estan protegidos y solo puede entrar los logeados sin importar el rol
+  //  [Authorize(Roles = "Admin,Usuario")]    //Nota: Asi digo q todos los metodos estan protegidos y solo puede entrar los logeados como Admin o Usuario
+
     [Area("Admin")]   //Nota: ponemos esto
     public class CategoriasController : Controller
     {
@@ -24,6 +29,7 @@ namespace AppBlogCore.Areas.Admin.Controllers
             return View();
         }
 
+        [AllowAnonymous]    //Nota: A nivel de clase solo los Admin..pero con esto hago un exepcion y puede entrar cualquiera
         [HttpGet]   
         public IActionResult Create()
         {
